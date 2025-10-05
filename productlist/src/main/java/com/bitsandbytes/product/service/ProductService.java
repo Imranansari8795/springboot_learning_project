@@ -5,6 +5,7 @@ package com.bitsandbytes.product.service;
 import com.bitsandbytes.product.dto.ProductDTO;
 import com.bitsandbytes.product.entity.Category;
 import com.bitsandbytes.product.entity.Product;
+import com.bitsandbytes.product.exception.CategoryNotFoundException;
 import com.bitsandbytes.product.mapper.ProductMapper;
 import com.bitsandbytes.product.repository.CategoryRepository;
 import com.bitsandbytes.product.repository.ProductRepository;
@@ -24,7 +25,8 @@ public class ProductService {
         /****
          * name , description , price , categoryId
          * *****/
-        Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found!"));
+        Category category = categoryRepository.findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category id "+ productDTO.getCategoryId() +" not found!"));
 
         // DTP --> entity
         Product product = ProductMapper.toProductEntity(productDTO, category);
