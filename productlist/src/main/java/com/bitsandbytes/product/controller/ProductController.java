@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class ProductController {
             responseCode = "201",
             description = "CREATED"
     )
+
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO){
         ProductDTO createProduct = productService.createProduct(productDTO);
@@ -56,6 +58,8 @@ public class ProductController {
             summary = "Update product by Product Id",
             description = "REST API to update product by Id"
     )
+
+
     @PutMapping("/{id}")
     public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO){
         return productService.updateProduct(id,productDTO);
@@ -76,6 +80,7 @@ public class ProductController {
             summary = "Delete product by product Id",
             description = "REST API to delete product by product Id"
     )
+
     @DeleteMapping("/{id}")
     public String deleteProduct(@PathVariable Long id){
 

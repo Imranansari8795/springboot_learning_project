@@ -4,6 +4,7 @@ package com.bitsandbytes.product.service;
 import com.bitsandbytes.product.dto.CategoryDTO;
 import com.bitsandbytes.product.entity.Category;
 import com.bitsandbytes.product.exception.CategoryAlreadyExistsException;
+import com.bitsandbytes.product.exception.CategoryNotFoundException;
 import com.bitsandbytes.product.mapper.CategoryMapper;
 import com.bitsandbytes.product.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.bitsandbytes.product.security.SecurityUtil.checkUserHasRole;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +26,7 @@ public class CategoryService {
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
 
+        checkUserHasRole("ROLE_ADMIN");
         Optional<Category>optionalCategory = categoryRepository.findByName(categoryDTO.getName());
 
         if(optionalCategory.isPresent()){
@@ -44,6 +48,11 @@ public class CategoryService {
     }
     // delete category
     public String deleteCategory(Long id){
+        checkUserHasRole("ROLE_ADMIN");
+
+        if(!categoryRepository.existsById(id)){
+            throw new CategoryNotFoundException("Category with ID "+id+" does not exists.");
+        }
         categoryRepository.deleteById(id);
         return "Category"+id+" has been deleted!";
     }

@@ -6,6 +6,7 @@ import com.bitsandbytes.product.dto.ProductDTO;
 import com.bitsandbytes.product.entity.Category;
 import com.bitsandbytes.product.entity.Product;
 import com.bitsandbytes.product.exception.CategoryNotFoundException;
+import com.bitsandbytes.product.exception.ProductNotFoundException;
 import com.bitsandbytes.product.mapper.ProductMapper;
 import com.bitsandbytes.product.repository.CategoryRepository;
 import com.bitsandbytes.product.repository.ProductRepository;
@@ -13,6 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.bitsandbytes.product.security.SecurityUtil.checkUserHasRole;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +28,8 @@ public class ProductService {
         /****
          * name , description , price , categoryId
          * *****/
+
+        checkUserHasRole("ROLE_SELLER");
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category id "+ productDTO.getCategoryId() +" not found!"));
 
@@ -48,7 +53,9 @@ public class ProductService {
 
     // update product
 
+
     public ProductDTO updateProduct(Long id, ProductDTO productDTO){
+        checkUserHasRole("ROLE_SELLER");
         Product product = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found!"));
         Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found!"));
 
@@ -63,6 +70,11 @@ public class ProductService {
     // delete product by id
 
     public String deleteProductById(Long id){
+        checkUserHasRole("ROLE_SELLER");
+
+        if (!productRepository.existsById(id)){
+            throw new ProductNotFoundException("Product with ID "+id+ " does not exists in Database.");
+        }
         productRepository.deleteById(id);
         return "Product "+id+" has been deleted!";
     }

@@ -5,6 +5,7 @@ import com.bitsandbytes.product.dto.ExceptionResponseDTO;
 import org.apache.coyote.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -25,6 +26,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionResponseDTO);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ExceptionResponseDTO>handleProductNotFoundException(ProductNotFoundException ex, WebRequest webRequest){
+        ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(
+                webRequest.getDescription(false),
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponseDTO);
+    }
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ExceptionResponseDTO>handleCategoryNotFoundException(CategoryNotFoundException ex, WebRequest webRequest){
         ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(
@@ -36,6 +47,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponseDTO);
     }
 
+    @ExceptionHandler(RoleBasedAuthorizationException.class)
+    public ResponseEntity<ExceptionResponseDTO> handleRoleBasedAuthorizationException(RoleBasedAuthorizationException ex, WebRequest webRequest){
+        ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(
+                webRequest.getDescription(false),
+                HttpStatus.FORBIDDEN,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponseDTO);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponseDTO>handleGlobalTypeException(Exception ex, WebRequest webRequest){
         ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO(
