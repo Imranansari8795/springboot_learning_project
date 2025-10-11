@@ -1,4 +1,4 @@
-package com.bitsandbytes.productlist;
+package com.bitsandbytes.product;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

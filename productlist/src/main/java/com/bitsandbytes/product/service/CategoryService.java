@@ -26,7 +26,7 @@ public class CategoryService {
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
 
-        checkUserHasRole("ROLE_ADMIN");
+//        checkUserHasRole("ROLE_ADMIN");
         Optional<Category>optionalCategory = categoryRepository.findByName(categoryDTO.getName());
 
         if(optionalCategory.isPresent()){
